@@ -1,5 +1,17 @@
 # API Prototype
 
+Generate a RESTful API
+
+## Getting Started
+
+```bash
+docker-compose up
+```
+
+This will start up the database and postgrest server.  To find out the port to
+use, you can do a `docker-compose ps`.  
+
+
 ## Fetch many:
 
 ```bash
