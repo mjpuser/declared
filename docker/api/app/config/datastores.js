@@ -33,10 +33,13 @@ module.exports.datastores = {
   ***************************************************************************/
 
   default: {
-    adapter: 'sails-dynamodb',
-    accessKeyId: process.env.DYNAMO_ACCESS_KEY_ID,
-    secretAccessKey: process.env.DYNAMO_SECRET_ACCESS_KEY,
-    region: 'us-west-1',
-    endPoint: 'http://dynamodb', // Optional: add for DynamoDB local
+      adapter: 'sails-disk',
   },
+  //default: {
+  //  adapter: 'sails-dynamodb',
+  //  accessKeyId: process.env.DYNAMO_ACCESS_KEY_ID,
+  //  secretAccessKey: process.env.DYNAMO_SECRET_ACCESS_KEY,
+  //  region: 'us-west-1',
+  //  endPoint: 'http://dynamodb', // Optional: add for DynamoDB local
+  //},
 };

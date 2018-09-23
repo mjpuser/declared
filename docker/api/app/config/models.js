@@ -119,7 +119,4 @@ module.exports.models = {
   ***************************************************************************/
 
   cascadeOnDestroy: true,
-
-
-  connection: 'dynamodb',
 };
