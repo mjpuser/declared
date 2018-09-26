@@ -1,5 +1,5 @@
+const Joi = require('joi');
+
 module.exports = {
-    attributes: {
-        task: { type: 'string', required: true }
-    }
+    task: Joi.string().required(),
 };

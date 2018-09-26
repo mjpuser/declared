@@ -1,0 +1,17 @@
+version: '3'
+services:
+    api:
+        image: api:latest
+        ports:
+            - 3000
+        depends_on:
+            - db
+        environment:
+            AWS_ACCESS_KEY_ID: AKID
+            AWS_SECRET_ACCESS_KEY: SECRET
+            AWS_REGION: us-east-1
+            MODEL: todo
+            ENDPOINT: http://db:8000
+    db:
+        image: fitz/dynamodb-local
+        command: -inMemory

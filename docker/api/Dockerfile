@@ -4,7 +4,7 @@ ADD ./app /app
 
 WORKDIR /app
 RUN npm i
-ADD ./todo.js /app/api/models/todo.js
+ADD ./todo.js /app/model-schema.js
 EXPOSE 8000
 
 CMD ["npm", "start", "--", "--port", "8000"]
