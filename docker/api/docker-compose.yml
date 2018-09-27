@@ -12,6 +12,8 @@ services:
             AWS_REGION: us-east-1
             MODEL: todo
             ENDPOINT: http://db:8000
+        volumes:
+            - "./todo.js:/app/model-schema.js"
     db:
         image: fitz/dynamodb-local
         command: -inMemory
