@@ -1,45 +1,76 @@
+const { Router } = require('express');
+const { STATUS_CODES } = require('http');
 const model = require('./model.js');
+const router = Router();
 
 // requires body-parser middleware
-const api = (req, res, next) => {
-    switch (req.method) {
-        case 'GET':
-            model.get(req.url.substr(1), (err, data) => {
-                if (err) {
-                    res.status(500).json({
-                        message: 'error',
-                        err,
-                    });
-                } else if (data === null) {
-                    res.status(404).json({
-                        message: 'not found'
-                    });
-                } else {
-                    res.json({
-                        message: 'ok',
-                        data,
-                    });
-                }
+router.get('/:id', (req, res) => {
+    model.get(req.params.id, (err, data) => {
+        if (err) {
+            res.status(err.statusCode).json({
+                status: STATUS_CODES[err.statusCode],
+                err,
             });
-            break;
-        case 'POST':
-            model.create(req.body, (err, data) => {
-                if (err) {
-                    res.status(400).json({
-                        message: 'error',
-                        err,
-                    });
-                } else {
-                    res.status(201).json({
-                        message: 'created',
-                        data,
-                    });
-                }
+        } else if (data === null) {
+            res.status(404).json({
+                status: STATUS_CODES[404],
             });
-            break;
-        default:
-            res.status(405).json({ message: 'Method not allowed' });
-    }
-};
+        } else {
+            res.json({
+                message: STATUS_CODES[200],
+                data,
+            });
+        }
+    });
+});
 
-module.exports = api;
+router.post('/', (req, res) => {
+    model.create(req.body, (err, data) => {
+        if (err) {
+            let statusCode = err.statusCode;
+            if (err.isJoi) {
+                statusCode = 400;
+            }
+            res.status(statusCode).json({
+                status: STATUS_CODES[statusCode],
+                err,
+            })
+        } else {
+            res.status(201).json({
+                status: STATUS_CODES[201],
+                data,
+            });
+        }
+    });
+});
+
+router.patch('/:id', (req, res) => {
+    const body = Object.assign(
+        {}, req.body, { id: req.params.id }
+    );
+    model.update(body, (err, data) => {
+        if (err) {
+            let statusCode = err.statusCode;
+            if (err.isJoi) {
+                statusCode = 400;
+            }
+            res.status(statusCode).json({
+                status: STATUS_CODES[statusCode],
+                err,
+            });
+        } else {
+            res.status(200).json({
+                status: STATUS_CODES[200],
+                data,
+            });
+        }
+    });
+});
+
+router.delete('/:id', (req, res) => {
+    model.destroy(req.params.id, (err) => {
+        res.status(204).end();
+    });
+});
+
+module.exports = router;
