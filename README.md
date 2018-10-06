@@ -8,16 +8,16 @@ Generate a RESTful API
 docker-compose up
 ```
 
-
-## Fetch many:
+## Create a todo item
 
 ```bash
-curl <url>/todos
+curl localhost:<port> -H'content-type:application/json' -d'{"task": "something"}'
 ```
+
 
 ## Fetch single:
 
 ```bash
-
+curl localhost:<port>/<id>
 ```
 
