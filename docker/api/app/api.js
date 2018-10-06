@@ -48,22 +48,28 @@ router.patch('/:id', (req, res) => {
     const body = Object.assign(
         {}, req.body, { id: req.params.id }
     );
-    model.update(body, (err, data) => {
-        if (err) {
-            let statusCode = err.statusCode;
-            if (err.isJoi) {
-                statusCode = 400;
+    const update = (data) => {
+        console.log('updating', data);
+        model.update(data, (err, data) => {
+            if (err) {
+                let statusCode = err.statusCode;
+                if (err.isJoi) {
+                    statusCode = 400;
+                }
+                res.status(statusCode).json({
+                    status: STATUS_CODES[statusCode],
+                    err,
+                });
+            } else {
+                res.status(200).json({
+                    status: STATUS_CODES[200],
+                    data,
+                });
             }
-            res.status(statusCode).json({
-                status: STATUS_CODES[statusCode],
-                err,
-            });
-        } else {
-            res.status(200).json({
-                status: STATUS_CODES[200],
-                data,
-            });
-        }
+        });
+    });
+    model.get(req.params.id, (err, data) => {
+        update(Object.assign(data, body));
     });
 });
 
