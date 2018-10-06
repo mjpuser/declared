@@ -17,7 +17,7 @@ router.get('/:id', (req, res) => {
             });
         } else {
             res.json({
-                message: STATUS_CODES[200],
+                status: STATUS_CODES[200],
                 data,
             });
         }

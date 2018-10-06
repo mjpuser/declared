@@ -1,7 +1,7 @@
 version: '3'
 services:
     api:
-        image: api:latest
+        build: .
         ports:
             - 3000
         depends_on:
