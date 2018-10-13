@@ -13,7 +13,7 @@ services:
             MODEL: todo
             ENDPOINT: http://db:8000
         volumes:
-            - "./todo.js:/app/model-schema.js"
+            - "./user.js:/app/model-config.js"
     db:
         image: fitz/dynamodb-local
         command: -inMemory

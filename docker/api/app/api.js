@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { STATUS_CODES } = require('http');
-const model = require('./model.js');
+const { model, settings: { blacklist = [] } } = require('./model.js');
 const router = Router();
 
 // requires body-parser middleware
@@ -16,6 +16,12 @@ router.get('/:id', (req, res) => {
                 status: STATUS_CODES[404],
             });
         } else {
+            data = Object.keys(data.attrs).reduce((acc, field) => {
+                if (!blacklist.includes(field)) {
+                    acc[field] = data.attrs[field];
+                }
+                return acc;
+            }, {});
             res.json({
                 status: STATUS_CODES[200],
                 data,
@@ -36,6 +42,12 @@ router.post('/', (req, res) => {
                 err,
             })
         } else {
+            data = Object.keys(data.attrs).reduce((acc, field) => {
+                if (!blacklist.includes(field)) {
+                    acc[field] = data.attrs[field];
+                }
+                return acc;
+            }, {});
             res.status(201).json({
                 status: STATUS_CODES[201],
                 data,
@@ -61,6 +73,12 @@ router.patch('/:id', (req, res) => {
                     err,
                 });
             } else {
+                data = Object.keys(data.attrs).reduce((acc, field) => {
+                    if (!blacklist.includes(field)) {
+                        acc[field] = data.attrs[field];
+                    }
+                    return acc;
+                }, {});
                 res.status(200).json({
                     status: STATUS_CODES[200],
                     data,

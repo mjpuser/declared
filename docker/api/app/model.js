@@ -1,6 +1,5 @@
 const dynamodb = require('dynamodb');
-const schema = require('./model-schema');
-
+const { settings = {}, schema } = require('./model-config');
 const MODEL = process.env.MODEL;
 
 if (MODEL === undefined || MODEL.trim().length < 1) {
@@ -9,7 +8,7 @@ if (MODEL === undefined || MODEL.trim().length < 1) {
 
 dynamodb.AWS.config.update({ endpoint: process.env.ENDPOINT });
 
-const Model = dynamodb.define(MODEL, {
+const model = dynamodb.define(MODEL, {
     hashKey: 'id',
     timestamps: true,
     schema: Object.assign({
@@ -27,4 +26,4 @@ dynamodb.createTables({
     }
 });
 
-module.exports = Model;
+module.exports = { model, settings };
