@@ -67,7 +67,7 @@ router.patch('/:id', (req, res) => {
                 });
             }
         });
-    });
+    };
     model.get(req.params.id, (err, data) => {
         update(Object.assign(data, body));
     });
