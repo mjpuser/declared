@@ -64,7 +64,7 @@ router.patch('/:id', (req, res) => {
         console.log('updating', data);
         model.update(data, (err, data) => {
             if (err) {
-                let statusCode = err.statusCode;
+                let statusCode = err.statusCode || 500;
                 if (err.isJoi) {
                     statusCode = 400;
                 }
@@ -87,7 +87,7 @@ router.patch('/:id', (req, res) => {
         });
     };
     model.get(req.params.id, (err, data) => {
-        update(Object.assign(data, body));
+        update(Object.assign(data.attrs, body));
     });
 });
 
