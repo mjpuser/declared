@@ -26,4 +26,4 @@ dynamodb.createTables({
     }
 });
 
-module.exports = { model, settings };
+module.exports = { model, settings, schema };

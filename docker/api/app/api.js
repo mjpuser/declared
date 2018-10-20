@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { STATUS_CODES } = require('http');
-const { model, settings: { blacklist = [] } } = require('./model.js');
+const Joi = require('joi');
+const { model, settings: { blacklist = [] }, schema } = require('./model.js');
 const router = Router();
 
 // requires body-parser middleware
@@ -56,39 +57,67 @@ router.post('/', (req, res) => {
     });
 });
 
-router.patch('/:id', (req, res) => {
+router.patch('/:id', async (req, res) => {
     const body = Object.assign(
         {}, req.body, { id: req.params.id }
     );
-    const update = (data) => {
-        console.log('updating', data);
-        model.update(data, (err, data) => {
-            if (err) {
-                let statusCode = err.statusCode || 500;
-                if (err.isJoi) {
-                    statusCode = 400;
-                }
-                res.status(statusCode).json({
-                    status: STATUS_CODES[statusCode],
-                    err,
-                });
-            } else {
-                data = Object.keys(data.attrs).reduce((acc, field) => {
-                    if (!blacklist.includes(field)) {
-                        acc[field] = data.attrs[field];
-                    }
-                    return acc;
-                }, {});
-                res.status(200).json({
-                    status: STATUS_CODES[200],
-                    data,
-                });
-            }
-        });
+    const validate = (data) => {
+        return Joi.validate(data, schema);
     };
-    model.get(req.params.id, (err, data) => {
-        update(Object.assign(data.attrs, body));
-    });
+    try {
+        const partialSchema = Object.keys(schema).reduce((partial, key) => {
+            if (key in body) {
+                partial = { ...partial, [key]: schema[key] };
+            }
+            return partial;
+        }, {});
+        const data = await new Promise((resolve, reject) => {
+            model.get(req.params.id, (err, data) => {
+                if (err) return reject(err);
+                resolve(data);
+            });
+        });
+        const merged = Object.assign({}, data.attrs, body);
+        const partial = Object.keys(merged).reduce((cleaned, key) => {
+            if (!['id', 'createdAt', 'updatedAt'].includes(key)) {
+                return { ...cleaned, [key]: merged[key] };
+            }
+            return cleaned;
+        }, {});
+        const { error: err } = validate(partial);
+        if (err) {
+            res.status(400).json({
+                status: STATUS_CODES[400],
+                err,
+            });
+            return;
+        }
+        const result = await new Promise((resolve, reject) => {
+            model.update(merged, (err, data) => {
+                if (err) return reject(err);
+                resolve(data);
+            });
+        });
+        result = Object.keys(result.attrs).reduce((acc, field) => {
+            if (!blacklist.includes(field)) {
+                acc[field] = result.attrs[field];
+            }
+            return acc;
+        }, {});
+        res.status(200).json({
+            status: STATUS_CODES[200],
+            data: result,
+        });
+    } catch (err) {
+        let statusCode = err.statusCode || 500;
+        if (err.isJoi) {
+            statusCode = 400;
+        }
+        res.status(statusCode).json({
+            status: STATUS_CODES[statusCode],
+            err,
+        });
+    }
 });
 
 router.delete('/:id', (req, res) => {
