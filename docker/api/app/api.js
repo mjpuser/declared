@@ -92,7 +92,7 @@ router.patch('/:id', async (req, res) => {
             });
             return;
         }
-        const result = await new Promise((resolve, reject) => {
+        let result = await new Promise((resolve, reject) => {
             model.update(merged, (err, data) => {
                 if (err) return reject(err);
                 resolve(data);
@@ -110,6 +110,7 @@ router.patch('/:id', async (req, res) => {
         });
     } catch (err) {
         let statusCode = err.statusCode || 500;
+        console.error(err);
         if (err.isJoi) {
             statusCode = 400;
         }
