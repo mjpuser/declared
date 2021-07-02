@@ -1,0 +1,8 @@
+version: '3.6'
+services:
+  dev:
+    image: node:16
+    user: "$UID:$GID"
+    volumes:
+      - ".:/app"
+    command: sleep infinity
