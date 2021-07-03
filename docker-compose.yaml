@@ -9,14 +9,16 @@ services:
     command: sleep infinity
     working_dir: /home/user/declared
   metadata:
-    image: postgres:12
+    build:
+      context: pgamqp
     restart: always
     volumes:
     - declared_metadata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
   db:
-    image: postgres:12
+    build:
+      context: pgamqp
     restart: always
     volumes:
     - declared_data:/var/lib/postgresql/data
@@ -40,6 +42,13 @@ services:
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       DECLARED_DB_URL: postgres://hasura:password@db:5432
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 15672
+    volumes:
+      - ./conf/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+      - ./conf/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
 volumes:
   declared_metadata:
   declared_data:
