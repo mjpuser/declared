@@ -30,7 +30,8 @@ services:
     ports:
     - "8080:8080"
     depends_on:
-    - "postgres"
+    - "metadata"
+    - "db"
     restart: always
     environment:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@metadata:5432/postgres
