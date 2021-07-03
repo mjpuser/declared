@@ -9,3 +9,10 @@ Setup
 export UID=${UID}
 export GID=${GID}
 ```
+
+Startup
+
+```bash
+# brings you in a docker file for your dev env
+yarn dev
+```
