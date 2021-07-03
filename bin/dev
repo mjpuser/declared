@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
-docker compose \
-    exec \
-    -u root \
-    dev \
-    bash -c "(mkdir /.hasura || true) && chown -R ${UID} /.hasura" \
-    && \
-    docker compose \
-    exec \
-    dev \
-    bash
+# Need to generate /.hasura dir cuz the client can't create
+# directories in the / dir.
+function make_hasura_dir() {
+    docker compose exec -u root dev bash -c \
+        "(mkdir /.hasura || true) > /dev/null 2>&1 && chown -R ${UID} /.hasura"
+}
+
+function exec_dev() {
+    docker compose exec dev bash
+}
+
+make_hasura_dir && exec_dev
