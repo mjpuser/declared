@@ -5,16 +5,17 @@ services:
     user: "$UID:$GID"
     volumes:
       - ".:/home/user/declared"
+      - "./bin/bashrc:/.bashrc"
     command: sleep infinity
     working_dir: /home/user/declared
-  postgres:
+  metadata:
     image: postgres:12
     restart: always
     volumes:
     - declared_metadata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
-  declared-db:
+  db:
     image: postgres:12
     restart: always
     volumes:
@@ -30,7 +31,7 @@ services:
     - "postgres"
     restart: always
     environment:
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@metadata:5432/postgres
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production
@@ -38,7 +39,7 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      DECLARED_DB_URL: postgres://hasura:password@declared-db:5432
+      DECLARED_DB_URL: postgres://hasura:password@db:5432
 volumes:
   declared_metadata:
   declared_data:

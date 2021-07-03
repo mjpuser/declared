@@ -24,5 +24,9 @@ yarn dev
 yarn install
 
 # apply metadata to your local hasura instance
-yarn hasura metadata apply
+# (hasura uses a metadata db)
+hasura metadata apply
+
+# apply migrations to your local hasura instance
+hasura migration apply --database-name declared
 ```
