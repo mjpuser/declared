@@ -1,0 +1,23 @@
+{
+  "name": "declared",
+  "version": "0.0.1",
+  "description": "Setup",
+  "main": "index.js",
+  "scripts": {
+    "dev": "./bin/dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjpuser/declared.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjpuser/declared/issues"
+  },
+  "homepage": "https://github.com/mjpuser/declared#readme",
+  "devDependencies": {
+    "hasura-cli": "^2.0.1"
+  }
+}

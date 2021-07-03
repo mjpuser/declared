@@ -4,5 +4,6 @@ services:
     image: node:16
     user: "$UID:$GID"
     volumes:
-      - ".:/app"
+      - ".:/home/user/declared"
     command: sleep infinity
+    working_dir: /home/user/declared

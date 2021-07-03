@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+docker compose \
+    exec \
+    -u root \
+    dev \
+    bash -c "(mkdir /.hasura || true) && chown -R ${UID} /.hasura" \
+    && \
+    docker compose \
+    exec \
+    dev \
+    bash
